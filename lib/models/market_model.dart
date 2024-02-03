@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:kokozaki_seller_panel/models/subscription_model.dart';
-import 'package:kokozaki_seller_panel/models/variations.dart';
 
 class MarketModel {
   final String uid;
   final String marketName;
   final String email;
   final String password;
+  final int sellerBalance;
   bool status;
   bool isAdmin;
   String imageUrl;
@@ -17,7 +17,7 @@ class MarketModel {
   SubscriptionModel? subscription;
   String category;
   double ratings;
-  Variations variations;
+
   // DateTime registeredAt = DateTime.now();
 
   MarketModel(
@@ -33,8 +33,8 @@ class MarketModel {
       required this.imageUrl,
       required this.category,
       required this.ratings,
+      required this.sellerBalance,
       required this.location,
-      required this.variations,
       this.subscription});
 
   Map<String, dynamic> toMap() {
@@ -51,9 +51,9 @@ class MarketModel {
       'category': category,
       'imageUrl': imageUrl,
       'ratings': ratings,
+      'sellerBalance': sellerBalance,
       'location': location,
       'subscription': subscription?.toMap() ?? '',
-      'variations': variations.toMap(),
     };
   }
 
@@ -66,6 +66,7 @@ class MarketModel {
         isAdmin: map['isAdmin'] ?? false,
         imageUrl: map['imageUrl'] ?? '',
         status: map['status'] ?? false,
+        sellerBalance: map['sellerBalance'] ?? 0,
         ratings: map['ratings'] ?? 0,
         location: map['location'] ?? {},
         coupons: map['coupons'] != null
@@ -77,8 +78,6 @@ class MarketModel {
             : [{}],
         hmRatings: map['hmRatings'] ?? 0,
         category: map['category'] ?? '',
-        variations:
-            Variations.fromMap(map['variations'] as Map<String, dynamic>),
         subscription: map['subscription'] != ''
             ? SubscriptionModel.fromMap(
                 map['subscription'] as Map<String, dynamic>)

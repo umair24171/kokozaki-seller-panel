@@ -5,6 +5,7 @@ import 'package:kokozaki_seller_panel/controllers/firestore_helper.dart';
 import 'package:kokozaki_seller_panel/helper/colors.dart';
 import 'package:kokozaki_seller_panel/helper/get_size.dart';
 import 'package:kokozaki_seller_panel/models/product.dart';
+import 'package:kokozaki_seller_panel/models/variations.dart';
 import 'package:kokozaki_seller_panel/screens/auth_screens/login_screen.dart';
 
 class AllProducts extends StatefulWidget {
@@ -22,6 +23,8 @@ class _AllProductsState extends State<AllProducts> {
   final TextEditingController oldpriceController = TextEditingController();
   final TextEditingController noOfPeoplesController = TextEditingController();
   final TextEditingController imageUrlController = TextEditingController();
+  final TextEditingController sizeController = TextEditingController();
+  final TextEditingController colorController = TextEditingController();
   showDialogForEditProduct(context, Product product) {
     titleController.text = product.name;
     descriptionController.text = product.description;
@@ -30,6 +33,8 @@ class _AllProductsState extends State<AllProducts> {
     imageUrlController.text = product.imageUrl;
     bool isStatus = false;
     isStatus = product.isStatus;
+    // sizeController.text = product.variations.size;
+    // colorController.text = product.variations.color;
 
     showDialog(
         useSafeArea: false,
@@ -86,6 +91,113 @@ class _AllProductsState extends State<AllProducts> {
                               text: 'ImageUrl',
                               controller: imageUrlController,
                             ),
+                            DropdownMenu(
+                                controller: sizeController,
+                                textStyle: const TextStyle(color: Colors.black),
+                                inputDecorationTheme: InputDecorationTheme(
+                                    constraints: const BoxConstraints(
+                                      maxHeight: 50,
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10))),
+                                menuStyle: MenuStyle(
+                                  elevation: const MaterialStatePropertyAll(10),
+                                  visualDensity: const VisualDensity(
+                                      horizontal: 0, vertical: -4),
+                                  shape: MaterialStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10))),
+                                ),
+                                hintText: 'Select Size',
+                                label: const Text(
+                                  'Select Size',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                onSelected: (value) {
+                                  sizeController.text = value.toString();
+                                  debugPrint(sizeController.text);
+                                },
+                                enableSearch: true,
+                                // leadingIcon: const Icon(Icons.category_outlined),
+                                dropdownMenuEntries: const [
+                                  DropdownMenuEntry(
+                                    value: 'S',
+                                    label: 'S',
+                                  ),
+                                  DropdownMenuEntry(
+                                    value: 'M',
+                                    label: 'M',
+                                  ),
+                                  DropdownMenuEntry(
+                                    value: 'L',
+                                    label: 'L',
+                                  ),
+                                  DropdownMenuEntry(
+                                    value: 'XL',
+                                    label: 'XL',
+                                  ),
+                                  DropdownMenuEntry(
+                                    value: 'XXL',
+                                    label: 'XXL',
+                                  ),
+                                ]),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            DropdownMenu(
+                                controller: colorController,
+                                textStyle: const TextStyle(color: Colors.black),
+                                inputDecorationTheme: InputDecorationTheme(
+                                    constraints: const BoxConstraints(
+                                      maxHeight: 50,
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10))),
+                                menuStyle: MenuStyle(
+                                  elevation: const MaterialStatePropertyAll(10),
+                                  visualDensity: const VisualDensity(
+                                      horizontal: 0, vertical: -4),
+                                  shape: MaterialStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10))),
+                                ),
+                                hintText: 'Select Color',
+                                label: const Text(
+                                  'Select Color',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                onSelected: (value) {
+                                  colorController.text = value.toString();
+                                  debugPrint(colorController.text);
+                                },
+                                enableSearch: true,
+                                // leadingIcon: const Icon(Icons.category_outlined),
+                                dropdownMenuEntries: const [
+                                  DropdownMenuEntry(
+                                    value: 'red',
+                                    label: 'red',
+                                  ),
+                                  DropdownMenuEntry(
+                                    value: 'blue',
+                                    label: 'blue',
+                                  ),
+                                  DropdownMenuEntry(
+                                    value: 'green',
+                                    label: 'green',
+                                  ),
+                                  DropdownMenuEntry(
+                                    value: 'yellow',
+                                    label: 'yellow',
+                                  ),
+                                  DropdownMenuEntry(
+                                    value: 'black',
+                                    label: 'black',
+                                  ),
+                                ]),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -146,11 +258,15 @@ class _AllProductsState extends State<AllProducts> {
                                 text: 'Update Product',
                                 icon: Icons.add_card,
                                 callBack: () async {
+                                  Variations variation =
+                                      Variations(size: [], color: []);
                                   Product product1 = Product(
+                                      isDeal: false,
                                       id: product.id,
                                       sellerId: product.sellerId,
                                       name: titleController.text,
                                       description: descriptionController.text,
+                                      variations: variation,
                                       oldPrice:
                                           double.parse(oldpriceController.text),
                                       newPrice:

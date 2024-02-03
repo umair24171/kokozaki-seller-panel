@@ -8,7 +8,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kokozaki_seller_panel/helper/snackbar.dart';
-import 'package:kokozaki_seller_panel/models/deal_model.dart';
 import 'package:kokozaki_seller_panel/models/market_model.dart';
 import 'package:kokozaki_seller_panel/models/product.dart';
 import 'package:uuid/uuid.dart';
@@ -69,9 +68,12 @@ class FirestoreHelper {
     }
   }
 
-  addDealProduct(context, Deal deal, String productId) async {
+  addDealProduct(context, Product product, String productId) async {
     try {
-      await _firestore.collection('deals').doc(productId).set(deal.toMap());
+      await _firestore
+          .collection('products')
+          .doc(productId)
+          .set(product.toMap());
     } catch (e) {
       showSnackBar(e.toString(), 'Error Accured while sending data');
     }
@@ -100,7 +102,7 @@ class FirestoreHelper {
 
   deleteDeal(String id) async {
     try {
-      await _firestore.collection('deals').doc(id).delete();
+      await _firestore.collection('products').doc(id).delete();
     } catch (e) {
       print(e.toString());
     }

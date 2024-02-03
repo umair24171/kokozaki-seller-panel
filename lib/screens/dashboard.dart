@@ -12,6 +12,7 @@ import 'package:kokozaki_seller_panel/screens/deals_screen.dart';
 import 'package:kokozaki_seller_panel/screens/orders_screen.dart';
 import 'package:kokozaki_seller_panel/screens/packages_screen.dart';
 import 'package:kokozaki_seller_panel/screens/products_screen.dart';
+import 'package:kokozaki_seller_panel/screens/seller_profile_screen.dart';
 import 'package:kokozaki_seller_panel/screens/user_buyer_data.dart';
 import 'package:sidebarx/sidebarx.dart';
 
@@ -210,6 +211,10 @@ class SidebarItems extends StatelessWidget {
           icon: Icons.chat_bubble,
           label: 'Chat',
         ),
+        SidebarXItem(
+          icon: Icons.person_outlined,
+          label: 'Profile',
+        ),
 
         // SidebarXItem(
         //   icon: Icons.subscriptions,
@@ -331,6 +336,8 @@ class SidebarScreens extends StatelessWidget {
             return CouponsScreen();
           case 8:
             return ChatScreen();
+          case 9:
+            return const SellerProfileScreen();
           default:
             return Text(
               pageTitle,

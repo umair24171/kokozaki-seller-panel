@@ -1,70 +1,67 @@
-import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class OrderModel {
-  final String email;
-  final String marketId;
-  final String marketName;
-  final String userName;
-  final DateTime orderDate;
-  final String orderId;
-  List<String> productIds;
-  final double totalPrice;
-  final int quantity;
-  final int status;
+  List<String> marketId;
   bool referalLink;
+  Map<String, dynamic> productQuantity;
+  String email;
+  String userName;
+  String orderId;
+  List<String> productIds;
+  double totalPrice;
   String userAddress;
+  int quantity;
+  String deliveryOption;
+  int status;
+  DateTime orderDate;
 
-  OrderModel(
-      {required this.email,
-      required this.marketId,
-      required this.marketName,
-      required this.userName,
-      required this.orderDate,
-      required this.orderId,
-      required this.totalPrice,
-      required this.productIds,
-      required this.quantity,
-      required this.status,
-      required this.userAddress,
-      required this.referalLink});
+  OrderModel({
+    required this.marketId,
+    required this.referalLink,
+    required this.productQuantity,
+    required this.email,
+    required this.userName,
+    required this.orderId,
+    required this.productIds,
+    required this.totalPrice,
+    required this.userAddress,
+    required this.quantity,
+    required this.deliveryOption,
+    required this.status,
+    required this.orderDate,
+  });
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'email': email,
+    return {
       'marketId': marketId,
-      'marketName': marketName,
-      'name': userName,
-      'orderDate': orderDate,
-      'orderId': orderId,
-      'totalPrice': totalPrice,
-      'quantity': quantity,
-      'status': status,
       'referalLink': referalLink,
+      'productQuantity': productQuantity,
+      'email': email,
+      'userName': userName,
+      'orderId': orderId,
       'productIds': productIds,
-      'userAddress': userAddress
+      'totalPrice': totalPrice,
+      'userAddress': userAddress,
+      'quantity': quantity,
+      'deliveryOption': deliveryOption,
+      'status': status,
+      'orderDate': orderDate,
     };
   }
 
-  factory OrderModel.fromMap(Map<String, dynamic> map) {
+  static OrderModel fromMap(Map<String, dynamic> map) {
     return OrderModel(
-      email: map['email'] as String,
-      marketId: map['marketId'] as String,
-      marketName: map['marketName'] as String,
-      userName: map['name'] as String,
-      orderDate: (map['orderDate'] as Timestamp).toDate(),
-      orderId: map['orderId'] as String,
-      totalPrice: map['totalPrice'] as double,
-      quantity: map['quantity'] as int,
-      status: map['status'] as int,
-      referalLink: map['referalLink'] as bool,
-      userAddress: map['userAddress'] as String,
-      productIds: List<String>.from(map['productIds'] as List<dynamic>),
+      marketId: List<String>.from(map['marketId']),
+      referalLink: map['referalLink'],
+      productQuantity: Map<String, dynamic>.from(map['productQuantity']),
+      email: map['email'],
+      userName: map['userName'],
+      orderId: map['orderId'],
+      productIds: List<String>.from(map['productIds']),
+      totalPrice: map['totalPrice'],
+      userAddress: map['userAddress'],
+      quantity: map['quantity'],
+      deliveryOption: map['deliveryOption'],
+      status: map['status'],
+      orderDate: map['orderDate'].toDate(),
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory OrderModel.fromJson(String source) =>
-      OrderModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

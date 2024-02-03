@@ -1,9 +1,11 @@
 // ignore_for_file: deprecated_member_use
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kokozaki_seller_panel/controllers/seller_controllers.dart';
+import 'package:kokozaki_seller_panel/controllers/user_buyer_controller.dart';
 import 'package:kokozaki_seller_panel/helper/colors.dart';
-import 'package:kokozaki_seller_panel/models/market_model.dart';
+import 'package:kokozaki_seller_panel/models/order.dart';
 // import 'package:kokzaki_admin_panel/helper/colors.dart';
 
 class UserBuyerData extends StatefulWidget {
@@ -13,63 +15,37 @@ class UserBuyerData extends StatefulWidget {
 }
 
 class _UserBuyerDataState extends State<UserBuyerData> {
-  MarketModel? seller;
-
-  @override
-  void initState() {
-    super.initState();
-    refershSeller();
-  }
-
-  refershSeller() async {
-    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
-        .collection('sellers')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    seller = MarketModel.fromMap(snapshot.data()!);
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
+    var seller = Get.put(SellerController());
+
+    seller.getSellerData();
+    var ordersData = Get.put(UserBuyerController());
+
+    ordersData.getOrders();
+    seller.updateUserSubscriptions();
     return Scaffold(
-      body: seller == null
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : seller!.subscription!.title != 'Professional' &&
-                  seller!.subscription!.title != 'Big Business'
-              ? const Center(
-                  child: Text(
-                    'You need to purchase Professional plan to see this data',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                  ),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection('orders')
-                              .where('marketId',
-                                  arrayContains:
-                                      FirebaseAuth.instance.currentUser!.uid)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              if (snapshot.data!.docs.isEmpty) {
-                                return const Center(
-                                    child: Text(
-                                  'No Orders Yet',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 20),
-                                ));
-                              }
-                              return SingleChildScrollView(
+      body: Obx(
+        () => seller.seller.value == null
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : seller.seller.value!.subscription!.title != 'Professional' &&
+                    seller.seller.value!.subscription!.title != 'Big Business'
+                ? const Center(
+                    child: Text(
+                      'You need to purchase Professional plan to see this data',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                    ),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                          child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: SingleChildScrollView(
                                 scrollDirection: Axis.vertical,
                                 child: DataTable(
                                     showBottomBorder: true,
@@ -149,9 +125,10 @@ class _UserBuyerDataState extends State<UserBuyerData> {
                                       ),
                                     ],
                                     rows: List.generate(
-                                        snapshot.data!.docs.length, (index) {
-                                      final data =
-                                          snapshot.data!.docs[index].data();
+                                        ordersData.orders.value.length,
+                                        (index) {
+                                      OrderModel orderModel =
+                                          ordersData.orders.value[index];
                                       return DataRow(
                                           key: UniqueKey(),
                                           selected: true,
@@ -163,8 +140,8 @@ class _UserBuyerDataState extends State<UserBuyerData> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Text(data['userName']),
-                                                Text(data['email'])
+                                                Text(orderModel.userName),
+                                                Text(orderModel.email)
                                               ],
                                             )),
                                             // const DataCell(Text('No Products')),
@@ -173,13 +150,11 @@ class _UserBuyerDataState extends State<UserBuyerData> {
                                                     .instance
                                                     .collection('products')
                                                     .where('id',
-                                                        whereIn:
-                                                            data['productIds'])
+                                                        whereIn: orderModel
+                                                            .productIds)
                                                     .where('sellerId',
-                                                        isEqualTo: FirebaseAuth
-                                                            .instance
-                                                            .currentUser!
-                                                            .uid)
+                                                        isEqualTo: seller
+                                                            .seller.value!.uid)
                                                     .snapshots(),
                                                 builder: (context, snapshot1) {
                                                   return snapshot1.hasData
@@ -238,48 +213,26 @@ class _UserBuyerDataState extends State<UserBuyerData> {
                                                               CircularProgressIndicator());
                                                 })),
                                             DataCell(Text(
-                                                '${data['quantity']} items')),
+                                                '${orderModel.quantity} items')),
                                             DataCell(Text(
-                                                '\$ ${data['totalPrice']}')),
+                                                '\$ ${orderModel.totalPrice}')),
                                             DataCell(
-                                              Text('${data['referalLink']}'),
+                                              Text('${orderModel.referalLink}'),
                                             ),
-                                            DataCell(StreamBuilder(
-                                                stream: FirebaseFirestore
-                                                    .instance
-                                                    .collection('sellers')
-                                                    .where('uid',
-                                                        whereIn:
-                                                            data['marketId'])
-                                                    .snapshots(),
-
-                                                // .doc(data['productIds'][0])
-
-                                                builder: (context, snapshot1) {
-                                                  if (snapshot1.hasData) {
-                                                    final data1 = snapshot1
-                                                        .data!.docs.first
-                                                        .data();
-                                                    return Text(
-                                                        '${data1['marketName']}');
-                                                  } else {
-                                                    return const Center(
-                                                        child:
-                                                            CircularProgressIndicator());
-                                                  }
-                                                })),
+                                            DataCell(Text(seller
+                                                .seller.value!.marketName)),
                                             // data['marketName'] == null
                                             //     ? const DataCell(
                                             //         Text('No Market Exist'))
                                             //     : DataCell(Text(
                                             //         '${data['marketName']}')),
-                                            data['status'] == 0
+                                            orderModel.status == 0
                                                 ? const DataCell(Text(
                                                     'Pending',
                                                     style: TextStyle(
                                                         color: Colors.green),
                                                   ))
-                                                : data['status'] == 1
+                                                : orderModel.status == 1
                                                     ? const DataCell(Text(
                                                         'Completed',
                                                         style: TextStyle(
@@ -292,15 +245,10 @@ class _UserBuyerDataState extends State<UserBuyerData> {
                                                       )),
                                           ]);
                                     })),
-                              );
-                            } else {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                          }),
-                    ))
-                  ],
-                ),
+                              )))
+                    ],
+                  ),
+      ),
     );
   }
 }

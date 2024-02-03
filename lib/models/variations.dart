@@ -1,6 +1,6 @@
 class Variations {
-  final String size;
-  final String color;
+  final List<String> size;
+  final List<String> color;
 
   Variations({required this.size, required this.color});
 
@@ -13,8 +13,8 @@ class Variations {
 
   factory Variations.fromMap(Map<String, dynamic> map) {
     return Variations(
-      size: map['size'] ?? '',
-      color: map['color'] ?? '',
+      size: List<String>.from(map['size']),
+      color: List<String>.from(map['color']),
     );
   }
 }

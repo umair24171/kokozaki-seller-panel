@@ -11,7 +11,6 @@ import 'package:kokozaki_seller_panel/controllers/firestore_helper.dart';
 import 'package:kokozaki_seller_panel/helper/colors.dart';
 import 'package:kokozaki_seller_panel/models/market_model.dart';
 import 'package:kokozaki_seller_panel/models/subscription_model.dart';
-import 'package:kokozaki_seller_panel/models/variations.dart';
 import 'package:kokozaki_seller_panel/screens/auth_screens/login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -72,13 +71,13 @@ class _SignupScreenState extends State<SignupScreen> {
 
       MarketModel market = MarketModel(
           uid: userCredential.user!.uid,
-          variations: Variations(size: '', color: ''),
           marketName: name,
           email: email,
           password: password,
           coupons: [],
           couponDiscount: [{}],
           hmRatings: 0,
+          sellerBalance: 0,
           imageUrl: url,
           category: selectedCategory,
           status: false,

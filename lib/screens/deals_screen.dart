@@ -36,176 +36,176 @@ class _DealsScreenState extends State<DealsScreen> {
   final TextEditingController imageUrlController = TextEditingController();
   bool isStatus = false;
 
-  showDialogForAddDeal(context) {
-    showDialog(
-        useSafeArea: false,
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            child: StatefulBuilder(builder: (context, setState) {
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: getWidth(context) * .6,
-                    ),
-                    Card(
-                      elevation: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        margin: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                colors: [
-                                  secondaryColor,
-                                  whiteColor,
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter),
-                            borderRadius: BorderRadius.circular(20)),
-                        width: getWidth(context) * .5,
-                        child: Form(
-                            child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomTextFormFIeld(
-                              text: 'Title',
-                              controller: titleController,
-                            ),
-                            CustomTextFormFIeld(
-                              text: 'Discount',
-                              controller: discountController,
-                            ),
-                            CustomTextFormFIeld(
-                              text: 'Description',
-                              maxLines: 4,
-                              controller: descriptionController,
-                            ),
-                            CustomTextFormFIeld(
-                              text: 'Price',
-                              controller: priceController,
-                            ),
-                            CustomTextFormFIeld(
-                              text: 'No of People the deal is for',
-                              controller: noOfPeoplesController,
-                            ),
-                            CustomTextFormFIeld(
-                              text: 'ImageUrl',
-                              controller: imageUrlController,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              child: Text(
-                                'Expire Date',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontFamily: 'Sofia-pro',
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 2)
-                                  .copyWith(bottom: 10),
-                              child: GestureDetector(
-                                onTap: () => _selectDate(context),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.transparent,
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(color: Colors.black)),
-                                  width: getWidth(context),
-                                  padding: const EdgeInsets.only(
-                                      left: 20, top: 20, bottom: 20),
-                                  child: Text(
-                                    DateFormat("MMM dd yyyy")
-                                        .format(selectedDate),
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        fontFamily: 'Sofia-pro',
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            CheckboxListTile(
-                                value: isStatus,
-                                title: const Text("Status"),
-                                onChanged: (val) {
-                                  setState(() {
-                                    isStatus = !isStatus;
-                                  });
-                                }),
-                            CustomButton(
-                                text: 'Add Deal',
-                                icon: Icons.add_card,
-                                callBack: () async {
-                                  var uuid = const Uuid();
-                                  String productId = uuid.v4();
-                                  Deal deal = Deal(
-                                      id: productId,
-                                      sellerId: FirebaseAuth
-                                          .instance.currentUser!.uid,
-                                      name: titleController.text,
-                                      description: descriptionController.text,
-                                      discount:
-                                          double.parse(discountController.text),
-                                      newPrice:
-                                          double.parse(priceController.text),
-                                      people:
-                                          int.parse(noOfPeoplesController.text),
-                                      imageUrl: imageUrlController.text,
-                                      isStatus: isStatus,
-                                      publishedDate: DateTime.now(),
-                                      expireDate: selectedDate);
+  // showDialogForAddDeal(context) {
+  //   showDialog(
+  //       useSafeArea: false,
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return Dialog(
+  //           shape:
+  //               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+  //           child: StatefulBuilder(builder: (context, setState) {
+  //             return SingleChildScrollView(
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.center,
+  //                 children: [
+  //                   SizedBox(
+  //                     width: getWidth(context) * .6,
+  //                   ),
+  //                   Card(
+  //                     elevation: 8,
+  //                     child: Container(
+  //                       padding: const EdgeInsets.all(20),
+  //                       margin: const EdgeInsets.all(20),
+  //                       decoration: BoxDecoration(
+  //                           gradient: LinearGradient(
+  //                               colors: [
+  //                                 secondaryColor,
+  //                                 whiteColor,
+  //                               ],
+  //                               begin: Alignment.topCenter,
+  //                               end: Alignment.bottomCenter),
+  //                           borderRadius: BorderRadius.circular(20)),
+  //                       width: getWidth(context) * .5,
+  //                       child: Form(
+  //                           child: Column(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           CustomTextFormFIeld(
+  //                             text: 'Title',
+  //                             controller: titleController,
+  //                           ),
+  //                           CustomTextFormFIeld(
+  //                             text: 'Discount',
+  //                             controller: discountController,
+  //                           ),
+  //                           CustomTextFormFIeld(
+  //                             text: 'Description',
+  //                             maxLines: 4,
+  //                             controller: descriptionController,
+  //                           ),
+  //                           CustomTextFormFIeld(
+  //                             text: 'Price',
+  //                             controller: priceController,
+  //                           ),
+  //                           CustomTextFormFIeld(
+  //                             text: 'No of People the deal is for',
+  //                             controller: noOfPeoplesController,
+  //                           ),
+  //                           CustomTextFormFIeld(
+  //                             text: 'ImageUrl',
+  //                             controller: imageUrlController,
+  //                           ),
+  //                           const Padding(
+  //                             padding: EdgeInsets.symmetric(
+  //                                 horizontal: 10, vertical: 10),
+  //                             child: Text(
+  //                               'Expire Date',
+  //                               style: TextStyle(
+  //                                   fontSize: 15,
+  //                                   fontFamily: 'Sofia-pro',
+  //                                   fontWeight: FontWeight.bold),
+  //                             ),
+  //                           ),
+  //                           Padding(
+  //                             padding: const EdgeInsets.symmetric(vertical: 2)
+  //                                 .copyWith(bottom: 10),
+  //                             child: GestureDetector(
+  //                               onTap: () => _selectDate(context),
+  //                               child: Container(
+  //                                 decoration: BoxDecoration(
+  //                                     color: Colors.transparent,
+  //                                     borderRadius: BorderRadius.circular(20),
+  //                                     border: Border.all(color: Colors.black)),
+  //                                 width: getWidth(context),
+  //                                 padding: const EdgeInsets.only(
+  //                                     left: 20, top: 20, bottom: 20),
+  //                                 child: Text(
+  //                                   DateFormat("MMM dd yyyy")
+  //                                       .format(selectedDate),
+  //                                   style: const TextStyle(
+  //                                       fontSize: 15,
+  //                                       fontFamily: 'Sofia-pro',
+  //                                       fontWeight: FontWeight.bold),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           CheckboxListTile(
+  //                               value: isStatus,
+  //                               title: const Text("Status"),
+  //                               onChanged: (val) {
+  //                                 setState(() {
+  //                                   isStatus = !isStatus;
+  //                                 });
+  //                               }),
+  //                           CustomButton(
+  //                               text: 'Add Deal',
+  //                               icon: Icons.add_card,
+  //                               callBack: () async {
+  //                                 var uuid = const Uuid();
+  //                                 String productId = uuid.v4();
+  //                                 Deal deal = Deal(
+  //                                     id: productId,
+  //                                     sellerId: FirebaseAuth
+  //                                         .instance.currentUser!.uid,
+  //                                     name: titleController.text,
+  //                                     description: descriptionController.text,
+  //                                     discount:
+  //                                         double.parse(discountController.text),
+  //                                     newPrice:
+  //                                         double.parse(priceController.text),
+  //                                     people:
+  //                                         int.parse(noOfPeoplesController.text),
+  //                                     imageUrl: imageUrlController.text,
+  //                                     isStatus: isStatus,
+  //                                     publishedDate: DateTime.now(),
+  //                                     expireDate: selectedDate);
 
-                                  FirestoreHelper()
-                                      .addDealProduct(context, deal, productId);
+  //                                 FirestoreHelper()
+  //                                     .addDealProduct(context, deal, productId);
 
-                                  Navigator.pop(context);
-                                  showSnackBar(
-                                      'Deal added Successful', 'Successful');
-                                }),
-                          ],
-                        )),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            }),
-            // actions: <Widget>[
-            //   TextButton(
-            //     onPressed: () {
-            //       Navigator.of(context)
-            //           .pop(); // Close the dialog
-            //     },
-            //     child: Text('Close'),
-            //   ),
-            // ],
-          );
-        });
-  }
+  //                                 Navigator.pop(context);
+  //                                 showSnackBar(
+  //                                     'Deal added Successful', 'Successful');
+  //                               }),
+  //                         ],
+  //                       )),
+  //                     ),
+  //                   )
+  //                 ],
+  //               ),
+  //             );
+  //           }),
+  //           // actions: <Widget>[
+  //           //   TextButton(
+  //           //     onPressed: () {
+  //           //       Navigator.of(context)
+  //           //           .pop(); // Close the dialog
+  //           //     },
+  //           //     child: Text('Close'),
+  //           //   ),
+  //           // ],
+  //         );
+  //       });
+  // }
 
-  DateTime selectedDate = DateTime.now();
+  // DateTime selectedDate = DateTime.now();
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2023),
-      lastDate: DateTime(2100),
-    );
+  // Future<void> _selectDate(BuildContext context) async {
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: selectedDate,
+  //     firstDate: DateTime(2023),
+  //     lastDate: DateTime(2100),
+  //   );
 
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
+  //   if (picked != null && picked != selectedDate) {
+  //     setState(() {
+  //       selectedDate = picked;
+  //     });
+  //   }
+  // }
 
   MarketModel? seller;
 
@@ -260,46 +260,46 @@ class _DealsScreenState extends State<DealsScreen> {
               : SingleChildScrollView(
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(40),
+                      const Padding(
+                        padding: EdgeInsets.all(40),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const NewDealWidget(),
-                            Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          showDialogForAddDeal(context);
-                                        },
-                                        child: Text(
-                                          'Add New Deal',
-                                          style: TextStyle(
-                                              color: whiteColor,
-                                              fontFamily: 'Hind'),
-                                        ),
-                                      ),
-                                      Icon(
-                                        Icons.add,
-                                        color: whiteColor,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
+                            NewDealWidget(),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(16),
+                            //   child: Container(
+                            //     decoration: BoxDecoration(
+                            //       color: primaryColor,
+                            //       borderRadius: BorderRadius.circular(16),
+                            //     ),
+                            //     child: Padding(
+                            //       padding: const EdgeInsets.all(8.0),
+                            //       child: Row(
+                            //         mainAxisAlignment:
+                            //             MainAxisAlignment.spaceAround,
+                            //         children: [
+                            //           InkWell(
+                            //             onTap: () {
+                            //               showDialogForAddDeal(context);
+                            //             },
+                            //             child: Text(
+                            //               'Add New Deal',
+                            //               style: TextStyle(
+                            //                   color: whiteColor,
+                            //                   fontFamily: 'Hind'),
+                            //             ),
+                            //           ),
+                            //           Icon(
+                            //             Icons.add,
+                            //             color: whiteColor,
+                            //           )
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
+                            // )
                           ],
                         ),
                       ),
